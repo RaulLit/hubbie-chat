@@ -1,14 +1,15 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../config/firebase";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Send } from "@mui/icons-material";
 import { Button, Container, TextField, Typography } from "@mui/material";
 
-export const SignIn = () => {
+export const LoginForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   if (auth.currentUser) {
     navigate("/");
   }

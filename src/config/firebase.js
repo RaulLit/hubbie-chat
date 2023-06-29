@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { addDoc, collection, getFirestore } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC4KvFgaY9sI43M6K3vT_e7GgB_XcKKtDs",
@@ -17,6 +17,9 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
+onAuthStateChanged(auth, (user) => {
+  console.log(user);
+});
 /*
   Steps to deploy using github
   - when changes are made run: 

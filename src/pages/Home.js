@@ -1,85 +1,39 @@
-import { useNavigate } from "react-router-dom";
-import { auth, db } from "../config/firebase";
-import { addDoc, collection } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { Box, Container } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
+import { auth } from "../config/firebase";
+import { CreateRoom } from "../components/CreateRoom";
+import { JoinRoom } from "../components/JoinRoom";
+import { Rooms } from "../components/Rooms";
+
+const sxFlexColumn = {
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-around",
+  alignItems: "center",
+};
+
+const sxFlex = {
+  display: "flex",
+  justifyContent: "space-around",
+  alignItems: "center",
+};
 
 export const Home = () => {
-  const navigate = useNavigate();
-  const dummy = useRef();
-  const [messages, setMessages] = useState(null);
-
-  if (!auth.currentUser) {
-    navigate("/signin");
-  }
-
-  // Schema
-  const schema = yup.object().shape({
-    message: yup.string().required("Write a message"),
-  });
-
-  // useForm
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
-  const colRef = collection(db, "messages");
-
-  const sendMessage = (data) => {
-    addDoc(colRef, {
-      ...data,
-    })
-      .then((res) => {
-        dummy.current.scrollIntoView({ behavior: "smooth" });
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const getMessages = async () => {
-    getDocs(colRef)
-      .then((data) =>
-        setMessages(data.docs.map((data) => ({ ...data.data(), id: data.id })))
-      )
-      .catch((err) => console.log(err));
-  };
-
-  useEffect(() => {
-    getMessages();
-  }, [getMessages]);
-
   return (
     <Container>
-      <Box>
-        {messages && messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
-        <span ref={dummy}></span>
+      <Box sx={{ textAlign: "center", m: 4 }}>
+        <Typography variant="h4">
+          Welcome back {auth.currentUser?.displayName}!!
+        </Typography>
       </Box>
-      <form noValidate autoComplete="off" onSubmit={handleSubmit(sendMessage)}>
-        <TextField
-          margin="normal"
-          label="Your Message"
-          variant="outlined"
-          color="secondary"
-          type="text"
-          required
-          fullWidth
-          error={errors.message ? true : false}
-          helperText={errors.message?.message}
-          {...register("message")}
-        />
-        <Button
-          type="submit"
-          color="secondary"
-          variant="contained"
-          endIcon={<Send />}
-          sx={{ ml: 1 }}
-        >
-          Send
-        </Button>
-      </form>
+
+      <Box sx={sxFlex}>
+        <Box sx={sxFlexColumn}>
+          <CreateRoom />
+          <JoinRoom />
+        </Box>
+
+        <Rooms />
+      </Box>
     </Container>
   );
 };
