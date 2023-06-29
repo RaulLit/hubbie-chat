@@ -1,39 +1,33 @@
-import { Box, Button, Typography } from "@mui/material";
-import { collection, doc, getDoc, query, where } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { Box, Button, ButtonGroup, Typography } from "@mui/material";
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
 import { auth, db } from "../config/firebase";
+import { AuthContext } from "../contexts/AuthContext";
 
 export const Rooms = () => {
   const [rooms, setRooms] = useState([]);
-  useEffect(() => {
-    // Get user rooms id
-    const docRef = doc(db, "users", auth.currentUser.uid);
-    getDoc(docRef)
-      .then(
-        (data) => {
-          console.log(data.data().rooms);
-          data.data().rooms.forEach((room) => {
-            // get room info
-            getRoomInfo(room);
-          });
-        }
-        // setRooms([...rooms, data.docs.map((data) => ({ ...data.data(), id: data.id }))])
-      )
-      .catch((err) => console.log(err));
+  const { user } = useContext(AuthContext);
 
-    // Get room info
-    const getRoomInfo = (id) => {
-      const docRef = doc(db, "rooms", id);
-      getDoc(docRef).then((res) => {
-        console.log(res.data(), "id", res.id);
-        setRooms([...rooms, { id, ...res.data() }]);
-      });
-    };
-  }, []);
+  // Get user rooms
+  const getUserRooms = () => {
+    const colRef = collection(db, "rooms");
+    const q = query(colRef, where("members", "array-contains", user.uid));
+    getDocs(q)
+      .then((res) => setRooms(res.docs.map((room) => ({ ...room.data(), id: room.id }))))
+      .catch((err) => console.log(err));
+  };
+
   return (
     <Box>
       <Typography variant="h5">Your Rooms</Typography>
-      {rooms && rooms.map((room) => <Button key={room.id}>{room.roomName}</Button>)}
+      {user && getUserRooms()}
+      <ButtonGroup
+        orientation="vertical"
+        aria-label="vertical contained button group"
+        variant="text"
+      >
+        {rooms && rooms.map((room) => <Button key={room.id}>{room.roomName}</Button>)}
+      </ButtonGroup>
     </Box>
   );
 };
