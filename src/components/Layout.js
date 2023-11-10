@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Container, Button } from "@mui/material";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
 import { useNavigate } from "react-router-dom";
@@ -14,13 +14,13 @@ export const Layout = ({ children }) => {
       .catch((err) => console.log(err));
   };
   return (
-    <Box>
+    <Container>
       {user && (
         <Button sx={{ position: "absolute", top: 0, right: 10 }} onClick={handleSignOut}>
           Sign Out
         </Button>
       )}
       {children}
-    </Box>
+    </Container>
   );
 };

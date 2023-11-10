@@ -1,14 +1,13 @@
-import { Box, Button, Container, Typography } from "@mui/material";
-import { useContext } from "react";
+import { Box, Button, Typography, Switch } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext";
+import { useContext } from "react";
+import { ThemeContext } from "../contexts/ThemeContext";
 
 export const Intro = () => {
-  const { auth } = useContext(AuthContext);
+  const { toggleTheme, mode } = useContext(ThemeContext);
   const navigate = useNavigate();
-  if (auth?.currentUser !== null) navigate("/home");
   return (
-    <Container sx={{ height: "100%", width: "100%", marginTop: 5, background: "gray" }}>
+    <Box sx={{ height: "100%", width: "100%", marginTop: 5, textAlign: "center" }}>
       <Box
         sx={{
           height: "60vh",
@@ -23,9 +22,18 @@ export const Intro = () => {
         <Typography variant="h4" sx={{ margin: "1rem 0" }}>
           Register to start now!
         </Typography>
+        <Button
+          variant={mode == "dark" ? "outlined" : "contained"}
+          onClick={() => navigate("/auth")}
+          sx={{}}
+        >
+          Get Started
+        </Button>
+        <Box sx={{ marginTop: "5rem" }}>
+          <Typography>What to change the theme?</Typography>
+          <Switch checked={mode === "dark" ? true : false} onChange={toggleTheme} />
+        </Box>
       </Box>
-
-      <Button onClick={() => navigate("/auth")}>Get Started</Button>
-    </Container>
+    </Box>
   );
 };
