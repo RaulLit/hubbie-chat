@@ -7,6 +7,7 @@ import { Auth } from "./pages/Auth";
 import { Home } from "./pages/Home";
 import { ChatRoom } from "./components/ChatRoom";
 import { Intro } from "./pages/Intro";
+import { NotFound } from "./pages/NotFound";
 
 export const Router = () => {
   const { user } = useContext(AuthContext);
@@ -21,6 +22,7 @@ export const Router = () => {
             path="/chatroom"
             element={user ? <ChatRoom /> : <Navigate to="/auth" />}
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
     </BrowserRouter>

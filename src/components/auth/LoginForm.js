@@ -1,18 +1,16 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../config/firebase";
-import { useLocation, useNavigate } from "react-router-dom";
+import { auth } from "../../config/firebase";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Send } from "@mui/icons-material";
 import { Button, Container, TextField, Typography } from "@mui/material";
+import { useState } from "react";
 
 export const LoginForm = () => {
+  const [passwordError, setPasswordError] = useState();
   const navigate = useNavigate();
-  const location = useLocation();
-  if (auth.currentUser) {
-    navigate("/");
-  }
 
   // Schema
   const schema = yup.object().shape({
@@ -34,10 +32,8 @@ export const LoginForm = () => {
     const password = data.password;
     console.log(data);
     signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        navigate("/");
-      })
-      .catch((err) => console.log(err));
+      .then(() => navigate("/"))
+      .catch((err) => setPasswordError(err.message));
   };
 
   return (
@@ -69,13 +65,14 @@ export const LoginForm = () => {
         />
         <Button
           type="submit"
-          color="secondary"
+          color="primary"
           variant="contained"
           endIcon={<Send />}
           sx={{ mt: 2 }}
         >
           Submit
         </Button>
+        {passwordError && <Typography color="error">{passwordError}</Typography>}
       </form>
     </Container>
   );

@@ -1,6 +1,6 @@
 import { Container, Divider } from "@mui/material";
-import { SignUpForm } from "../components/SignUpForm";
-import { LoginForm } from "../components/LoginForm";
+import { SignUpForm } from "../components/auth/SignUpForm";
+import { LoginForm } from "../components/auth/LoginForm";
 
 export const Auth = () => {
   return (
@@ -13,9 +13,9 @@ export const Auth = () => {
         alignItems: "center",
       }}
     >
-      <SignUpForm />
-      <Divider orientation="vertical" variant="middle" flexItem color="black" />
       <LoginForm />
+      <Divider orientation="vertical" variant="middle" flexItem color="black" />
+      <SignUpForm />
     </Container>
   );
 };

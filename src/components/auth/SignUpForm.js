@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, db } from "../config/firebase";
+import { auth, db } from "../../config/firebase";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
@@ -26,7 +26,7 @@ export const SignUpForm = () => {
             const docRef = doc(db, "users", auth.currentUser.uid);
             setDoc(docRef, { name, rooms: [] })
               .then(() => {
-                navigate("/");
+                navigate("/home");
               })
               .catch((err) => console.log(err));
           })
@@ -35,6 +35,7 @@ export const SignUpForm = () => {
       .catch((err) => {
         if (err.message === "Firebase: Error (auth/email-already-in-use).")
           setError("Email already in use :(");
+        else setError(err.message);
       });
   };
 
@@ -115,7 +116,7 @@ export const SignUpForm = () => {
         />
         <Button
           type="submit"
-          color="secondary"
+          color="primary"
           variant="contained"
           endIcon={<Send />}
           sx={{ mt: 2 }}
